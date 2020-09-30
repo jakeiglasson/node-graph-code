@@ -1,7 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, useRef } from "react";
+
 import "./App.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Chart from "react-google-charts";
 
 export default class App extends Component {
 	state = {
@@ -37,6 +39,14 @@ export default class App extends Component {
 		// 	console.log(Mn);
 		// }
 	};
+
+	componentDidMount() {
+		const canvas = this.refs.canvas;
+		const ctx = canvas.getContext("2d");
+		ctx.beginPath();
+		ctx.rect(0, 0, 333, 277);
+		ctx.stroke();
+	}
 
 	handleSubmit = async (e) => {
 		e.preventDefault();
@@ -103,6 +113,25 @@ export default class App extends Component {
 			Md: Md,
 		});
 		console.log(this.state);
+
+		this.displayPlots();
+	};
+
+	displayPlots = () => {
+		const canvas = this.refs.canvas;
+		const ctx = canvas.getContext("2d");
+		let { Md, Mn } = this.state;
+		console.log(Md);
+		console.log(Mn);
+		let scale = 6;
+		Md.forEach((node) => {
+			ctx.fillStyle = "blue";
+			ctx.fillRect(node.x * scale, node.y * scale, 10, 10);
+		});
+		Mn.forEach((node) => {
+			ctx.fillStyle = "green";
+			ctx.fillRect(node.x * scale, node.y * scale, 10, 10);
+		});
 	};
 
 	render() {
@@ -138,6 +167,9 @@ export default class App extends Component {
 						Submit
 					</Button>
 				</Form>
+				<div style={{ marginLeft: "20px", marginTop: "20px" }}>
+					<canvas ref="canvas" width={333} height={277} />
+				</div>
 			</div>
 		);
 	}
